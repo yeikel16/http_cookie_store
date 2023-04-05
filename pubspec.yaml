@@ -1,10 +1,10 @@
 name: http_cookie_store
-description: A starting point for Dart libraries or applications.
-version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+description: Process and store cookies in a cookie store, or directly use it as a http client.
+version: 0.0.1
+repository: https://github.com/Dampfwalze/http_cookie_store
 
 environment:
-  sdk: '>=2.19.6 <3.0.0'
+  sdk: ">=2.19.6 <3.0.0"
 
 # dependencies:
 #   path: ^1.8.0
