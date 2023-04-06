@@ -17,12 +17,18 @@ class CookieKey {
         path = Uri(path: url.path);
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is CookieKey &&
-          name == other.name &&
-          domain == other.domain &&
-          path == other.path;
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    if (other is Cookie) {
+      return other.key == this;
+    }
+
+    return other is CookieKey &&
+        name == other.name &&
+        domain == other.domain &&
+        path == other.path;
+  }
 
   @override
   int get hashCode => name.hashCode ^ domain.hashCode ^ path.hashCode;
@@ -182,21 +188,25 @@ class Cookie implements MapEntry<CookieKey, String> {
   }
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Cookie &&
-          name == other.name &&
-          value == other.value &&
-          domain == other.domain &&
-          hostOnly == other.hostOnly &&
-          expires == other.expires &&
-          httpOnly == other.httpOnly &&
-          path == other.path &&
-          secure == other.secure &&
-          sameSite == other.sameSite &&
-          isRemoveCookie == other.isRemoveCookie &&
-          creationTime == other.creationTime &&
-          lastAccessTime == other.lastAccessTime;
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    if (other is CookieKey) return key == other;
+
+    return other is Cookie &&
+        name == other.name &&
+        value == other.value &&
+        domain == other.domain &&
+        hostOnly == other.hostOnly &&
+        expires == other.expires &&
+        httpOnly == other.httpOnly &&
+        path == other.path &&
+        secure == other.secure &&
+        sameSite == other.sameSite &&
+        isRemoveCookie == other.isRemoveCookie &&
+        creationTime == other.creationTime &&
+        lastAccessTime == other.lastAccessTime;
+  }
 
   @override
   int get hashCode =>

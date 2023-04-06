@@ -514,17 +514,16 @@ void main() {
             time: time,
           );
 
-        expect(store.cookies, hasLength(1));
+        expect(store, hasLength(1));
         expect(
-          store.cookies.first,
-          equals(Cookie(
-            "foo",
-            "bar",
-            domain: Uri(host: "example.com"),
-            hostOnly: true,
-            creationTime: time,
-          )),
-        );
+            store[CookieKey("foo", Uri(host: "example.com"))],
+            equals(Cookie(
+              "foo",
+              "bar",
+              domain: Uri(host: "example.com"),
+              hostOnly: true,
+              creationTime: time,
+            )));
       });
       test('Test 2', () {
         final store = CookieStore()
@@ -539,9 +538,10 @@ void main() {
             time: time.add(Duration(seconds: 1)),
           );
 
-        expect(store.cookies, hasLength(2));
+        expect(store, hasLength(2));
         expect(
-          store.cookies.first,
+          store[
+              CookieKey.fromUrl("foo", Uri(host: "example.com", path: "/bar"))],
           equals(Cookie(
             "foo",
             "foo",
@@ -552,7 +552,7 @@ void main() {
           )),
         );
         expect(
-          store.cookies.last,
+          store[CookieKey.fromUrl("foo", Uri(host: "example.com", path: "/"))],
           equals(Cookie(
             "foo",
             "baz",
@@ -572,7 +572,7 @@ void main() {
             time: time,
           );
 
-        expect(store.cookies, isEmpty);
+        expect(store, isEmpty);
       });
     });
 
@@ -585,19 +585,19 @@ void main() {
             "bar=baz; max-age=1",
           ], domain: Uri(host: "example.com"), time: time);
 
-        expect(store.cookies, hasLength(2));
+        expect(store, hasLength(2));
 
         store.pump(time: time);
 
-        expect(store.cookies, hasLength(2));
+        expect(store, hasLength(2));
 
         store.pump(time: time.add(const Duration(seconds: 1)));
 
-        expect(store.cookies, hasLength(1));
+        expect(store, hasLength(1));
 
         store.pump(time: time.add(const Duration(seconds: 2)));
 
-        expect(store.cookies, isEmpty);
+        expect(store, isEmpty);
       });
 
       test('MaxCountPerDomain', () {
@@ -618,9 +618,9 @@ void main() {
 
         store.pump(time: time, maxCountPerDomain: 2);
 
-        expect(store.cookies, hasLength(2));
-        expect(store.cookies.first.name, equals("bar"));
-        expect(store.cookies.last.name, equals("baz"));
+        expect(store, hasLength(2));
+        expect(store.cookies.singleWhere((c) => c.name == "bar"), isNotNull);
+        expect(store.cookies.singleWhere((c) => c.name == "baz"), isNotNull);
       });
     });
 
