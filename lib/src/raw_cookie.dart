@@ -5,7 +5,7 @@ import 'cookie_attributes.dart';
 import 'set_cookie_header_parser.dart';
 import 'uri_matches.dart';
 
-class RawCookie extends DelegatingMap<String, dynamic>
+class RawCookie extends DelegatingMap<String, Object>
     implements MapEntry<String, String> {
   final String name;
 
@@ -15,7 +15,7 @@ class RawCookie extends DelegatingMap<String, dynamic>
   @override
   final String value;
 
-  final Map<String, dynamic> attributes;
+  final Map<String, Object> attributes;
 
   RawCookie(this.name, this.value, [this.attributes = const {}])
       : super(attributes);
@@ -45,9 +45,9 @@ class RawCookie extends DelegatingMap<String, dynamic>
       domain: domainAttrib ?? domain,
       hostOnly: domainAttrib == null,
       expires: expires,
-      httpOnly: attributes[CookieAttributes.httpOnly] as bool? ?? false,
+      httpOnly: attributes.containsKey(CookieAttributes.httpOnly),
       path: attributes[CookieAttributes.path] as Uri? ?? Uri(path: '/'),
-      secure: attributes[CookieAttributes.secure] as bool? ?? false,
+      secure: attributes.containsKey(CookieAttributes.secure),
       sameSite:
           attributes[CookieAttributes.sameSite] as SameSite? ?? SameSite.lax,
       creationTime: time,
@@ -56,7 +56,7 @@ class RawCookie extends DelegatingMap<String, dynamic>
 
   @override
   String toString() {
-    return '$name=$value; ${attributes.entries.map((e) => e.value != null ? '${e.key}=${e.value}' : e.key).join('; ')}';
+    return '$name=$value; ${attributes.entries.map((e) => e.value != valueExists ? '${e.key}=${e.value}' : e.key).join('; ')}';
   }
 
   @override
@@ -70,4 +70,10 @@ class RawCookie extends DelegatingMap<String, dynamic>
 
   @override
   int get hashCode => name.hashCode ^ value.hashCode ^ attributes.hashCode;
+}
+
+const valueExists = ValueExists();
+
+class ValueExists {
+  const ValueExists();
 }

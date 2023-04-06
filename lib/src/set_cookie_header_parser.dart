@@ -34,7 +34,7 @@ class SetCookieHeaderParser {
       throw IgnoreCookieException("Cookie is missing '='");
     }
 
-    Map<String, dynamic> attributes = Map.fromEntries(matches
+    Map<String, Object> attributes = Map.fromEntries(matches
         .skip(1)
         .map((match) => parseAttribute(
               match.namedGroup('key')!,
@@ -47,12 +47,16 @@ class SetCookieHeaderParser {
   }
 
   /// https://www.rfc-editor.org/rfc/rfc6265#section-5.2
-  static MapEntry<String, dynamic>? parseAttribute(String key, String? value,
+  static MapEntry<String, Object>? parseAttribute(String key, String? value,
       {bool throwOnError = false, bool passUnhandledErrorToZone = false}) {
     final lowerKey = key.toLowerCase();
     final parser = _parsers[lowerKey];
 
     if (parser == null) {
+      if (passUnhandledErrorToZone) {
+        Zone.current.handleUncaughtError(
+            Exception("Unknown attribute '$key'"), StackTrace.current);
+      }
       return null;
     }
 
@@ -111,10 +115,10 @@ class SetCookieHeaderParser {
       return Uri.parse(value.replaceAll(RegExp(r'(?<=.)\/$'), ''));
     },
     CookieAttributes.secure: (String? value) {
-      return true;
+      return valueExists;
     },
     CookieAttributes.httpOnly: (String? value) {
-      return true;
+      return valueExists;
     },
     CookieAttributes.sameSite: (String? value) {
       if (value == null) return _shouldNotBeNull;
