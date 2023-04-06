@@ -1,0 +1,16 @@
+{
+    "configurations": [
+        {
+            "name": "Dart: Run all Tests",
+            "type": "dart",
+            "request": "launch",
+            "program": "./test/"
+        },
+        {
+            "name": "Dart: Run example",
+            "type": "dart",
+            "request": "launch",
+            "program": "example/http_cookie_store_example.dart"
+        }
+    ]
+}
