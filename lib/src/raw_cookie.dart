@@ -32,7 +32,7 @@ class RawCookie extends DelegatingMap<String, Object>
     final domainAttrib = attributes[CookieAttributes.domain] as Uri?;
 
     if (domainAttrib != null && domain != null) {
-      if (!domainAttrib.isSubdomainOf(domain)) {
+      if (!domain.isSubdomainOf(domainAttrib)) {
         throw IgnoreCookieException(
             "Domain attribute is not a subdomain of the request domain");
       }

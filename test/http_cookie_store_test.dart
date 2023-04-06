@@ -284,7 +284,7 @@ void main() {
         expect(cookie.domain, Uri(host: 'example.com'));
       });
 
-      test('Ignore when not a subdomain of requested domain', () {
+      test('Ignore when requested domain not a subdomain of attribute 1', () {
         try {
           Cookie.fromSetCookieHeader(
             'foo=bar; Domain=example.com',
@@ -293,6 +293,29 @@ void main() {
         } on IgnoreCookieException catch (e) {
           expect(e.message,
               "Domain attribute is not a subdomain of the request domain");
+        }
+      });
+
+      test('Ignore when requested domain not a subdomain of attribute 2', () {
+        try {
+          Cookie.fromSetCookieHeader(
+            'foo=bar; Domain=foo.example.com',
+            domain: Uri(host: 'example.com'),
+          );
+        } on IgnoreCookieException catch (e) {
+          expect(e.message,
+              "Domain attribute is not a subdomain of the request domain");
+        }
+      });
+
+      test('Ignore when requested domain not a subdomain of attribute 3', () {
+        try {
+          Cookie.fromSetCookieHeader(
+            'foo=bar; Domain=example.com',
+            domain: Uri(host: 'foo.example.com'),
+          );
+        } on IgnoreCookieException catch (e) {
+          fail(e.message);
         }
       });
     });
