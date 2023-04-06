@@ -42,7 +42,7 @@ class RawCookie extends DelegatingMap<String, Object>
       name,
       value,
       isRemoveCookie: value.isEmpty,
-      domain: domainAttrib ?? domain,
+      domain: domainAttrib ?? (domain != null ? Uri(host: domain.host) : null),
       hostOnly: domainAttrib == null,
       expires: expires,
       httpOnly: attributes.containsKey(CookieAttributes.httpOnly),
