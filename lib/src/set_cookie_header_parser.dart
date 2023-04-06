@@ -19,7 +19,7 @@ class IgnoreCookieException implements Exception {
 
 class SetCookieHeaderParser {
   /// https://www.rfc-editor.org/rfc/rfc6265#section-5.2
-  static RawCookie parse(String header, {Uri? domain}) {
+  static RawCookie parse(String header) {
     final matches = RegExp(r'\s*(?<key>[^;=\s]*)(?:\s*=\s*(?<value>[^;]*))?')
         .allMatches(header)
         .where((m) => m.start != m.end);

@@ -20,6 +20,10 @@ class RawCookie extends DelegatingMap<String, Object>
   RawCookie(this.name, this.value, [this.attributes = const {}])
       : super(attributes);
 
+  factory RawCookie.fromSetCookieHeader(String value) {
+    return SetCookieHeaderParser.parse(value);
+  }
+
   Cookie toCookie({Uri? domain, DateTime? time}) {
     final maxAge = attributes[CookieAttributes.maxAge] as Duration?;
 
