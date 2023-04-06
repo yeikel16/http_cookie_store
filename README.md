@@ -4,7 +4,7 @@ Process and store cookies in a cookie store, or directly use it as a http client
 
 - [x] `Cookie`
 - [x] `CookieStore`
-- [ ] `CookieClient` http client (using [http package](https://pub.dev/packages/http))
+- [x] `CookieClient` http client (using [http package](https://pub.dev/packages/http))
 
 ## Getting started
 

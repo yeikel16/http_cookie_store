@@ -7,3 +7,4 @@ export 'src/cookie.dart';
 export 'src/cookie_store.dart';
 export 'src/set_cookie_header_parser.dart';
 export 'src/uri_matches.dart';
+export 'src/cookie_client.dart';
