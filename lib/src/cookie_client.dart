@@ -14,6 +14,11 @@ class CookieClient extends http.BaseClient {
         store = store ?? CookieStore();
 
   @override
+  void close() {
+    _inner.close();
+  }
+
+  @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
     request.headers[HttpHeaders.cookieHeader] = store.toCookieHeaderFor(
       uri: request.url,
