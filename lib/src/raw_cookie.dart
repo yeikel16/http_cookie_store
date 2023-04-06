@@ -7,15 +7,17 @@ import 'uri_matches.dart';
 
 class RawCookie extends DelegatingMap<String, dynamic>
     implements MapEntry<String, String> {
+  final String name;
+
   @override
-  final String key;
+  String get key => name;
 
   @override
   final String value;
 
   final Map<String, dynamic> attributes;
 
-  RawCookie(this.key, this.value, [this.attributes = const {}])
+  RawCookie(this.name, this.value, [this.attributes = const {}])
       : super(attributes);
 
   Cookie toCookie({Uri? domain, DateTime? time}) {
@@ -37,7 +39,7 @@ class RawCookie extends DelegatingMap<String, dynamic>
     }
 
     return Cookie(
-      key,
+      name,
       value,
       isRemoveCookie: value.isEmpty,
       domain: domainAttrib ?? domain,
@@ -54,7 +56,7 @@ class RawCookie extends DelegatingMap<String, dynamic>
 
   @override
   String toString() {
-    return '$key=$value; ${attributes.entries.map((e) => e.value != null ? '${e.key}=${e.value}' : e.key).join('; ')}';
+    return '$name=$value; ${attributes.entries.map((e) => e.value != null ? '${e.key}=${e.value}' : e.key).join('; ')}';
   }
 
   @override
@@ -62,10 +64,10 @@ class RawCookie extends DelegatingMap<String, dynamic>
       identical(this, other) ||
       other is RawCookie &&
           runtimeType == other.runtimeType &&
-          key == other.key &&
+          name == other.name &&
           value == other.value &&
           const MapEquality().equals(attributes, other.attributes);
 
   @override
-  int get hashCode => key.hashCode ^ value.hashCode ^ attributes.hashCode;
+  int get hashCode => name.hashCode ^ value.hashCode ^ attributes.hashCode;
 }

@@ -30,7 +30,7 @@ void main() {
     test('Name/value trimmed', () {
       final cookie = SetCookieHeaderParser.parse('  foo  =  bar  ');
 
-      expect(cookie.key, "foo");
+      expect(cookie.name, "foo");
       expect(cookie.value, "bar");
     });
 
@@ -39,7 +39,7 @@ void main() {
         'foo=bar;   domain  =  example.com   ',
       );
 
-      expect(cookie.key, "foo");
+      expect(cookie.name, "foo");
       expect(cookie.value, "bar");
       expect(cookie[CookieAttributes.domain], Uri(host: 'example.com'));
     });
@@ -49,7 +49,7 @@ void main() {
         'foo=bar;   domain  =  example.com   ;   baz  =  qux   ',
       );
 
-      expect(cookie.key, "foo");
+      expect(cookie.name, "foo");
       expect(cookie.value, "bar");
       expect(cookie[CookieAttributes.domain], Uri(host: 'example.com'));
       expect(cookie.containsKey('baz'), isFalse);
@@ -383,7 +383,7 @@ void main() {
 
       expect(cookie.isRemoveCookie, isFalse);
       expect(cookie.isSessionCookie, isTrue);
-      expect(cookie.key, equals("foo"));
+      expect(cookie.name, equals("foo"));
       expect(cookie.value, equals("bar"));
       expect(cookie.domain?.host, equals("example.com"));
       expect(cookie.expires, isNull);
@@ -407,7 +407,7 @@ void main() {
 
       expect(cookie.isRemoveCookie, isFalse);
       expect(cookie.isSessionCookie, isFalse);
-      expect(cookie.key, equals("foo"));
+      expect(cookie.name, equals("foo"));
       expect(cookie.value, equals("bar"));
       expect(cookie.domain?.host, equals("example.com"));
       expect(
@@ -432,7 +432,7 @@ void main() {
 
       expect(cookie.isRemoveCookie, isFalse);
       expect(cookie.isSessionCookie, isFalse);
-      expect(cookie.key, equals("foo"));
+      expect(cookie.name, equals("foo"));
       expect(cookie.value, equals("bar"));
       expect(cookie.domain?.host, equals("example.com"));
       expect(
@@ -453,7 +453,7 @@ void main() {
       for (var cookie in cookies) {
         expect(cookie.isRemoveCookie, isTrue);
         expect(cookie.isSessionCookie, isTrue);
-        expect(cookie.key, equals("foo"));
+        expect(cookie.name, equals("foo"));
         expect(cookie.value, equals(""));
         expect(cookie.domain, isNull);
         expect(cookie.expires, isNull);
@@ -619,8 +619,8 @@ void main() {
         store.pump(time: time, maxCountPerDomain: 2);
 
         expect(store.cookies, hasLength(2));
-        expect(store.cookies.first.key, equals("bar"));
-        expect(store.cookies.last.key, equals("baz"));
+        expect(store.cookies.first.name, equals("bar"));
+        expect(store.cookies.last.name, equals("baz"));
       });
     });
 

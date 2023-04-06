@@ -4,10 +4,37 @@ import 'set_cookie_header_parser.dart';
 
 enum SameSite { lax, strict, none }
 
-class Cookie implements MapEntry<String, String> {
-  /// The name of the cookie.
+class CookieKey {
+  final String name;
+  final Uri? domain;
+  final Uri path;
+
+  CookieKey(this.name, [this.domain, Uri? path])
+      : path = path ?? Uri(path: '/');
+
+  CookieKey.fromUrl(this.name, Uri url)
+      : domain = url.host.isEmpty ? null : Uri(host: url.host),
+        path = Uri(path: url.path);
+
   @override
-  final String key;
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CookieKey &&
+          name == other.name &&
+          domain == other.domain &&
+          path == other.path;
+
+  @override
+  int get hashCode => name.hashCode ^ domain.hashCode ^ path.hashCode;
+}
+
+class Cookie implements MapEntry<CookieKey, String> {
+  @override
+  final CookieKey key;
+
+  /// The name of the cookie.
+  String get name => key.name;
+
   @override
   final String value;
 
@@ -16,14 +43,14 @@ class Cookie implements MapEntry<String, String> {
   /// If not set, the cookie is considered valid for all domains by a [CookieStore].
   ///
   /// If set, the cookie is only valid for the given domain and its subdomains.
-  final Uri? domain;
+  Uri? get domain => key.domain;
 
   /// The path for which this cookie is valid.
   ///
   /// Defaults to the root path '/'.
   ///
   /// If set, the cookie is only valid for the given path and its subpaths.
-  final Uri path;
+  Uri get path => key.path;
 
   /// Whether this cookie is only valid for the given [domain], or also for its subdomains.
   final bool hostOnly;
@@ -70,9 +97,9 @@ class Cookie implements MapEntry<String, String> {
   }
 
   Cookie(
-    this.key,
+    String name,
     this.value, {
-    this.domain,
+    Uri? domain,
     bool? hostOnly,
     DateTime? expires,
     this.httpOnly = false,
@@ -82,7 +109,11 @@ class Cookie implements MapEntry<String, String> {
     this.isRemoveCookie = false,
     DateTime? creationTime,
     DateTime? lastAccessTime,
-  })  : path = path ?? Uri(path: '/'),
+  })  : key = CookieKey(
+          name,
+          domain,
+          path ?? Uri(path: '/'),
+        ),
         hostOnly = hostOnly ?? domain == null,
         expires = expires?.toUtc(),
         creationTime = creationTime?.toUtc() ?? DateTime.now().toUtc(),
@@ -97,7 +128,7 @@ class Cookie implements MapEntry<String, String> {
   }
 
   String get toSetCookieHeader => [
-        '$key=$value',
+        '$name=$value',
         if (expires != null) 'Expires=${HttpDate.format(expires!)}',
         if (!hostOnly && domain != null) 'Domain=${domain!.host}',
         if (path.path != '/') 'Path=${path.path}',
@@ -107,7 +138,7 @@ class Cookie implements MapEntry<String, String> {
           'SameSite=${sameSite.name[0].toUpperCase()}${sameSite.name.substring(1)}',
       ].join('; ');
 
-  String get toCookieHeader => '$key=$value';
+  String get toCookieHeader => '$name=$value';
 
   bool isExpired([DateTime? now]) {
     return expires != null && expires!.isBefore(now ?? DateTime.now().toUtc());
@@ -117,7 +148,7 @@ class Cookie implements MapEntry<String, String> {
   String toString() => toSetCookieHeader;
 
   Cookie copyWith({
-    String? key,
+    String? name,
     String? value,
     Uri? domain,
     bool? hostOnly,
@@ -131,7 +162,7 @@ class Cookie implements MapEntry<String, String> {
     DateTime? lastAccessTime,
   }) {
     return Cookie(
-      key ?? this.key,
+      name ?? this.name,
       value ?? this.value,
       domain: domain ?? this.domain,
       hostOnly: hostOnly ?? this.hostOnly,
@@ -147,14 +178,14 @@ class Cookie implements MapEntry<String, String> {
   }
 
   bool sameIdentityAs(Cookie other) {
-    return key == other.key && domain == other.domain && path == other.path;
+    return key == other.key;
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is Cookie &&
-          key == other.key &&
+          name == other.name &&
           value == other.value &&
           domain == other.domain &&
           hostOnly == other.hostOnly &&
@@ -169,7 +200,7 @@ class Cookie implements MapEntry<String, String> {
 
   @override
   int get hashCode =>
-      key.hashCode ^
+      name.hashCode ^
       value.hashCode ^
       domain.hashCode ^
       hostOnly.hashCode ^
