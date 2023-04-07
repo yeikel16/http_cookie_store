@@ -1,5 +1,26 @@
+// Copyright (c) 2023, Paul Suckow.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
 import 'dart:io' show HttpDate;
 
+import 'cookie_store.dart';
 import 'set_cookie_header_parser.dart';
 
 enum SameSite { lax, strict, none }
@@ -46,7 +67,8 @@ class Cookie implements MapEntry<CookieKey, String> {
 
   /// The domain for which this cookie is valid.
   ///
-  /// If not set, the cookie is considered valid for all domains by a [CookieStore].
+  /// If not set, the cookie is considered valid for all domains by a
+  /// [CookieStore].
   ///
   /// If set, the cookie is only valid for the given domain and its subdomains.
   Uri? get domain => key.domain;
@@ -58,19 +80,23 @@ class Cookie implements MapEntry<CookieKey, String> {
   /// If set, the cookie is only valid for the given path and its subpaths.
   Uri get path => key.path;
 
-  /// Whether this cookie is only valid for the given [domain], or also for its subdomains.
+  /// Whether this cookie is only valid for the given [domain], or also for its
+  /// subdomains.
   final bool hostOnly;
 
   final DateTime? expires;
 
-  /// In a browser environment, this indicates whether the cookie is visible to client-side scripts.
+  /// In a browser environment, this indicates whether the cookie is visible to
+  /// client-side scripts.
   ///
-  /// When set to true, the cookie is not accessible via JavaScript's `Document.cookie` API.
+  /// When set to true, the cookie is not accessible via JavaScript's
+  /// `Document.cookie` API.
   ///
   /// Has no effect in this library.
   final bool httpOnly;
 
-  /// Whether this cookie should only be sent over secure connections (http**s**).
+  /// Whether this cookie should only be sent over secure connections
+  /// (http**s**).
   final bool secure;
 
   final SameSite sameSite;
@@ -81,7 +107,8 @@ class Cookie implements MapEntry<CookieKey, String> {
 
   /// Whether to remove the cookie from any [CookieStore].
   ///
-  /// This is set to true, when a Set-Cookie header specifies the empty string for this cookie.
+  /// This is set to true, when a Set-Cookie header specifies the empty string
+  /// for this cookie.
   final bool isRemoveCookie;
 
   /// Whether this cookie should only exist for this session.
