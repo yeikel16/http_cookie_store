@@ -25,8 +25,8 @@ import 'cookie_attributes.dart';
 import 'set_cookie_header_parser.dart';
 import 'uri_matches.dart';
 
-class RawCookie extends DelegatingMap<String, Object>
-    implements MapEntry<String, String> {
+final class RawCookie extends DelegatingMap<String, Object>
+    implements CookieMapEntry<String, String> {
   final String name;
 
   @override

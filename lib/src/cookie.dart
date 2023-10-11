@@ -25,7 +25,7 @@ import 'set_cookie_header_parser.dart';
 
 enum SameSite { lax, strict, none }
 
-class CookieKey {
+final class CookieKey {
   final String name;
   final Uri? domain;
   final Uri path;
@@ -55,7 +55,7 @@ class CookieKey {
   int get hashCode => name.hashCode ^ domain.hashCode ^ path.hashCode;
 }
 
-class Cookie implements MapEntry<CookieKey, String> {
+final class Cookie implements CookieMapEntry<CookieKey, String> {
   @override
   final CookieKey key;
 
@@ -249,4 +249,21 @@ class Cookie implements MapEntry<CookieKey, String> {
       isRemoveCookie.hashCode ^
       creationTime.hashCode ^
       lastAccessTime.hashCode;
+}
+
+interface class CookieMapEntry<K, V> {
+  final K key;
+
+  final V value;
+
+  /// Creates an entry with [key] and [value].
+  const factory CookieMapEntry(K key, V value) = CookieMapEntry<K, V>._;
+
+  const CookieMapEntry._(this.key, this.value);
+
+  /// String representation intended for debugging only.
+  ///
+  /// Not guaranteed to be stable over time.
+  @override
+  String toString() => "CookieMapEntry($key: $value)";
 }
